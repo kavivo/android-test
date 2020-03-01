@@ -15,6 +15,7 @@
  */
 package androidx.test.internal.runner;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -26,6 +27,11 @@ import android.os.Bundle;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+import androidx.test.testing.fixtures.AppLifecycleListener;
+import androidx.test.testing.fixtures.BrokenCustomTestFilter;
+import androidx.test.testing.fixtures.CustomRunnerBuilder;
+import androidx.test.testing.fixtures.CustomTestFilter;
+import androidx.test.testing.fixtures.CustomTestFilterTakesBundle;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -48,6 +54,10 @@ import org.junit.runners.model.RunnerBuilder;
 @RunWith(AndroidJUnit4.class)
 @SmallTest
 public class RunnerArgsTest {
+
+  /** Temp file used for testing */
+  @Rule
+  public TemporaryFolder tmpFolder = new TemporaryFolder(getApplicationContext().getCacheDir());
 
   /** Simple test for parsing test class name */
   @Test
@@ -225,9 +235,6 @@ public class RunnerArgsTest {
     assertEquals("ClassName1", args.notTests.get(0).testClassName);
     assertEquals("method", args.notTests.get(0).methodName);
   }
-
-  /** Temp file used for testing */
-  @Rule public TemporaryFolder tmpFolder = new TemporaryFolder();
 
   /**
    * Test parsing bundle when package names, class names, and method names are provided within a
